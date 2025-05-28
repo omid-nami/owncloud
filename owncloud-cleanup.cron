@@ -1,0 +1,2 @@
+# Run OwnCloud cleanup daily at 22:00
+0 22 * * * root /home/nami/CascadeProjects/owncloud-cleanup/cleanup_owncloud.sh
