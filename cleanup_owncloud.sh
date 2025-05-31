@@ -3,8 +3,11 @@
 # Script to clean up OwnCloud user directories
 # This will delete all contents but preserve the user directories themselves
 
+OWNCLOUD_PATH="/var/www/owncloud"
 # Set the path to your OwnCloud data directory
-OC_DATA_DIR="/var/www/owncloud/data"
+OC_DATA_DIR="$OWNCLOUD_PATH/data"
+# Path to occ command
+OCC_CMD="$OWNCLOUD_PATH/occ"
 
 # Log file location
 LOG_FILE="/var/log/owncloud-cleanup.log"
@@ -37,6 +40,10 @@ if [ -d "$OC_DATA_DIR" ]; then
             chown -R www-data:www-data "$user_dir"
             chmod 750 "$user_dir"
             chmod 770 "$user_dir/files"
+            
+            # Clean up database entries for the user
+            log "Cleaning up database entries for user: $username"
+            sudo -u www-data php "$OCC_CMD" files:cleanup "$username" --quiet || log "Warning: Could not clean up database for user $username"
         fi
     done
     log "Cleanup completed successfully"
